@@ -1,0 +1,32 @@
+{
+  "name": "riwaz-problem-statement-portal",
+  "version": "1.0.0",
+  "description": "Secure 3-Phase Problem Statement Submission Portal with Google Sheets backend",
+  "main": "server/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "test": "node server/test/api.test.js"
+  },
+  "keywords": [
+    "hackathon",
+    "problem-statement",
+    "google-sheets",
+    "express",
+    "secure-submission"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "googleapis": "^144.0.0",
+    "helmet": "^8.0.0",
+    "zod": "^3.24.2"
+  }
+}

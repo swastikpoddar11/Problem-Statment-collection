@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problem Statement Selection Portal</title>
+  <meta name="description" content="Secure, verified problem statement selection portal for registered teams.">
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Top Executive Navbar -->
+  <header class="top-navbar">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="brand-icon-box">
+          <i data-lucide="layers" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div>
+          <div class="brand-text-title">Problem Statement Portal</div>
+          <div class="brand-text-subtitle">Team Selection & Verification</div>
+        </div>
+      </div>
+      <div class="nav-status-badge">
+        <span class="pulse-indicator"></span>
+        <span>System Online</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- Hero Heading -->
+    <div class="hero-header">
+      <h1 class="hero-title">Problem Statement Submission</h1>
+      <p class="hero-description">Verify your registered team, choose your theme and problem statement, and confirm your final selection.</p>
+    </div>
+
+    <!-- Stepper Navigation Track -->
+    <nav class="stepper-track" aria-label="Progress Workflow">
+      <div class="stepper-node active" id="stepIndicator1">
+        <div class="node-badge" id="stepNum1">1</div>
+        <div class="node-content">
+          <span class="node-phase">Step 1</span>
+          <span class="node-title">Team Verification</span>
+        </div>
+      </div>
+      <div class="stepper-node" id="stepIndicator2">
+        <div class="node-badge" id="stepNum2">2</div>
+        <div class="node-content">
+          <span class="node-phase">Step 2</span>
+          <span class="node-title">Theme & PS Choice</span>
+        </div>
+      </div>
+      <div class="stepper-node" id="stepIndicator3">
+        <div class="node-badge" id="stepNum3">3</div>
+        <div class="node-content">
+          <span class="node-phase">Step 3</span>
+          <span class="node-title">Lock & Submit</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Global Notification Banner -->
+    <div id="globalNotification" style="display: none;"></div>
+
+    <!-- ======================================================== -->
+    <!-- PHASE 1: TEAM IDENTIFICATION & VERIFICATION             -->
+    <!-- ======================================================== -->
+    <section class="panel-card" id="phase1Card">
+      <div class="panel-card-head">
+        <div class="panel-head-left">
+          <div class="panel-icon-circle">
+            <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+          </div>
+          <div>
+            <h2 class="panel-head-title">1. Team Identification & Verification</h2>
+            <p class="panel-head-sub">Search using Team Leader's Name, USN, Phone, or Team Name</p>
+          </div>
+        </div>
+        <span class="badge-tag tag-pending" id="phase1Badge">Pending</span>
+      </div>
+
+      <!-- Search Section -->
+      <div id="teamSearchSection">
+        <div class="form-field-group">
+          <label class="field-label" for="teamSearchInput">
+            <span>Find Registered Team</span>
+            <span class="field-hint">Instant live search</span>
+          </label>
+          <div class="search-bar-wrap">
+            <i data-lucide="search" class="search-bar-icon" style="width: 18px; height: 18px;"></i>
+            <input 
+              type="text" 
+              id="teamSearchInput" 
+              class="search-input-field" 
+              placeholder="Search leader name, USN, phone, or team name..." 
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button type="button" class="btn-clear-search" id="clearSearchBtn" title="Clear search">
+              <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+            </button>
+          </div>
+          
+          <!-- Dropdown Suggestions List -->
+          <div class="results-card-dropdown" id="autocompleteList" role="listbox"></div>
+        </div>
+      </div>
+
+      <!-- Verified Team Profile Card -->
+      <div id="teamDetailsSection" style="display: none;">
+        <div class="verified-profile-box">
+          <div class="profile-top-strip">
+            <div class="verified-lock-tag">
+              <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: var(--success-600);"></i>
+              <span>Verified Team Record</span>
+            </div>
+            <button type="button" class="btn-switch-team" id="changeTeamBtn">
+              <i data-lucide="rotate-ccw" style="width: 13px; height: 13px; margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+              Switch Team
+            </button>
+          </div>
+
+          <div class="profile-detail-grid">
+            <div class="profile-field-block">
+              <span class="field-caption">Team Name</span>
+              <span class="field-value-text bold-heading" id="dispTeamName">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Team Leader</span>
+              <span class="field-value-text bold-heading" id="dispTeamLeader">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Leader USN / Reg No</span>
+              <span class="field-value-text mono-code" id="dispLeaderUSN">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Contact Phone</span>
+              <span class="field-value-text" id="dispPhone">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Branch / Batch</span>
+              <span class="field-value-text" id="dispCollege">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Registered Theme</span>
+              <span class="field-value-text" id="dispTrack">-</span>
+            </div>
+            <div class="profile-field-block full-span">
+              <span class="field-caption">Team Members</span>
+              <div class="members-inline-row" id="dispMembers">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplicate Warning -->
+        <div id="alreadySubmittedAlert" class="alert-card-box warning" style="display: none; margin-top: 1.25rem;">
+          <i data-lucide="alert-triangle" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+          <div>
+            <strong style="font-family: var(--font-heading);">Already Submitted</strong>
+            <p>This team has already submitted a problem statement. If you need to re-submit, contact an organizer to reset your record.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PHASE 2: THEME & PROBLEM STATEMENT SELECTION            -->
+    <!-- ======================================================== -->
+    <section class="panel-card disabled-panel" id="phase2Card">
+      <div class="panel-card-head">
+        <div class="panel-head-left">
+          <div class="panel-icon-circle">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+          </div>
+          <div>
+            <h2 class="panel-head-title">2. Select Theme & Problem Statement</h2>
+            <p class="panel-head-sub">Choose a theme to reveal its official problem statements</p>
+          </div>
+        </div>
+        <span class="badge-tag tag-pending" id="phase2Badge">Locked</span>
+      </div>
+
+      <!-- Theme Chips -->
+      <div class="form-field-group">
+        <label class="field-label">
+          <span>Choose Domain Theme</span>
+          <span class="field-hint" id="themesLoading">Loading themes...</span>
+        </label>
+        <div class="theme-pill-grid" id="themesGrid"></div>
+      </div>
+
+      <!-- Filtered Problem Statements Dropdown -->
+      <div class="form-field-group" id="psSelectGroup" style="display: none;">
+        <label class="field-label" for="psDropdown">
+          <span>Select Problem Statement</span>
+          <span class="field-hint" id="psCountHint"></span>
+        </label>
+        <select id="psDropdown" class="styled-select-box">
+          <option value="">-- Choose Problem Statement --</option>
+        </select>
+      </div>
+
+      <!-- Locked PS Details Card -->
+      <div id="psDetailsSection" style="display: none; margin-top: 1.25rem;">
+        <div class="verified-profile-box">
+          <div class="profile-top-strip">
+            <div class="verified-lock-tag">
+              <i data-lucide="lock" style="width: 14px; height: 14px;"></i>
+              <span>Locked Problem Statement</span>
+            </div>
+            <span class="badge-tag tag-verified" id="dispPsCategory">Category</span>
+          </div>
+
+          <div class="profile-detail-grid">
+            <div class="profile-field-block">
+              <span class="field-caption">PS Number / ID</span>
+              <span class="field-value-text mono-code" id="dispPsId">-</span>
+            </div>
+            <div class="profile-field-block">
+              <span class="field-caption">Selected Theme</span>
+              <span class="field-value-text bold-heading" id="dispPsTheme">-</span>
+            </div>
+            <div class="profile-field-block full-span">
+              <span class="field-caption">Problem Statement Title (PS Name)</span>
+              <span class="field-value-text bold-heading" style="font-size: 1.05rem; line-height: 1.5; color: var(--primary-700);" id="dispPsTitle">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PHASE 3: FINAL REVIEW & SUBMISSION                      -->
+    <!-- ======================================================== -->
+    <section class="panel-card disabled-panel" id="phase3Card">
+      <div class="panel-card-head">
+        <div class="panel-head-left">
+          <div class="panel-icon-circle">
+            <i data-lucide="send" style="width: 20px; height: 20px;"></i>
+          </div>
+          <div>
+            <h2 class="panel-head-title">3. Final Verification & Lock-In</h2>
+            <p class="panel-head-sub">Review your selections carefully before submitting</p>
+          </div>
+        </div>
+        <span class="badge-tag tag-pending" id="phase3Badge">Pending</span>
+      </div>
+
+      <!-- Summary Card -->
+      <div class="verified-profile-box" style="margin-bottom: 1.5rem;">
+        <div class="profile-detail-grid">
+          <div class="profile-field-block">
+            <span class="field-caption">Submitting Team</span>
+            <span class="field-value-text bold-heading" id="summaryTeamName">-</span>
+          </div>
+          <div class="profile-field-block">
+            <span class="field-caption">Team Leader</span>
+            <span class="field-value-text bold-heading" id="summaryTeamLeader">-</span>
+          </div>
+          <div class="profile-field-block">
+            <span class="field-caption">Selected PS ID</span>
+            <span class="field-value-text mono-code" id="summaryPsId">-</span>
+          </div>
+          <div class="profile-field-block">
+            <span class="field-caption">Selected Theme</span>
+            <span class="field-value-text" id="summaryPsTheme">-</span>
+          </div>
+          <div class="profile-field-block full-span">
+            <span class="field-caption">Problem Statement Name (PS Name)</span>
+            <span class="field-value-text bold-heading" style="line-height: 1.5;" id="summaryPsName">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Action Button -->
+      <button type="button" class="btn-primary-action" id="finalSubmitBtn" disabled>
+        <i data-lucide="check" style="width: 18px; height: 18px;"></i>
+        <span>Review & Confirm Selection</span>
+      </button>
+    </section>
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- CONFIRMATION MODAL                                       -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay-bg" id="confirmModal" role="dialog" aria-modal="true">
+    <div class="modal-card-window">
+      <div class="modal-head-center">
+        <div class="modal-status-icon" style="background: var(--primary-50); border-color: var(--primary-100); color: var(--primary-600);">
+          <i data-lucide="help-circle" style="width: 26px; height: 26px;"></i>
+        </div>
+        <h3 class="modal-head-title">Confirm Final Selection</h3>
+        <p class="modal-head-subtitle">Please double-check your team and problem statement details.</p>
+      </div>
+
+      <div class="receipt-ticket-box">
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Team Leader</span>
+          <span class="ticket-row-value" id="modalConfirmTeamLeader">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Team Name</span>
+          <span class="ticket-row-value" id="modalConfirmTeamName">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Selected PS ID</span>
+          <span class="ticket-row-value" style="font-family: var(--font-mono); color: var(--primary-600);" id="modalConfirmPsId">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Theme</span>
+          <span class="ticket-row-value" id="modalConfirmTheme">-</span>
+        </div>
+        <div class="ticket-data-row" style="flex-direction: column; gap: 0.25rem; align-items: flex-start;">
+          <span class="ticket-row-caption">Problem Statement Name</span>
+          <span class="ticket-row-value" style="text-align: left; line-height: 1.4;" id="modalConfirmPsName">-</span>
+        </div>
+      </div>
+
+      <div class="modal-btn-row">
+        <button type="button" class="btn-modal-cancel" id="cancelConfirmBtn">
+          Cancel
+        </button>
+        <button type="button" class="btn-modal-confirm" id="executeSubmitBtn">
+          Confirm & Lock In
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- DIGITAL RECEIPT MODAL                                    -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay-bg" id="receiptModal" role="dialog" aria-modal="true">
+    <div class="modal-card-window">
+      <div class="modal-head-center">
+        <div class="modal-status-icon">
+          <i data-lucide="check" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h3 class="modal-head-title">Submission Confirmed</h3>
+        <p class="modal-head-subtitle">Your problem statement selection has been permanently recorded.</p>
+      </div>
+
+      <div class="receipt-ticket-box" id="receiptTicket">
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Status</span>
+          <span class="ticket-row-value" style="color: var(--success-600);">✓ Recorded & Verified</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Team Leader</span>
+          <span class="ticket-row-value" id="receiptLeader">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Team Name</span>
+          <span class="ticket-row-value" id="receiptTeamName">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Selected PS ID</span>
+          <span class="ticket-row-value" style="font-family: var(--font-mono); color: var(--primary-600);" id="receiptPsId">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Theme</span>
+          <span class="ticket-row-value" id="receiptTheme">-</span>
+        </div>
+        <div class="ticket-data-row">
+          <span class="ticket-row-caption">Category</span>
+          <span class="ticket-row-value" id="receiptCategory">-</span>
+        </div>
+        <div class="ticket-data-row" style="flex-direction: column; gap: 0.25rem; align-items: flex-start;">
+          <span class="ticket-row-caption">Problem Statement Name</span>
+          <span class="ticket-row-value" style="text-align: left; line-height: 1.4;" id="receiptPsName">-</span>
+        </div>
+      </div>
+
+      <div class="modal-btn-row">
+        <button type="button" class="btn-modal-cancel" id="printReceiptBtn">
+          <i data-lucide="printer" style="width: 16px; height: 16px; margin-right: 6px; display: inline-block; vertical-align: middle;"></i>
+          Print Receipt
+        </button>
+        <button type="button" class="btn-modal-confirm" id="closeModalBtn">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
