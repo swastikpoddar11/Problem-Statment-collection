@@ -23,7 +23,21 @@ export const config = {
     spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID || '',
     webhookUrl: process.env.GOOGLE_SHEETS_WEBHOOK_URL || '',
     serviceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '',
-    privateKey: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    privateKey: (() => {
+      let key = process.env.GOOGLE_PRIVATE_KEY || '';
+      if (key) {
+        key = key.replace(/\\n/g, '\n');
+        if (!key.includes('BEGIN PRIVATE KEY')) {
+          try {
+            const decoded = Buffer.from(key.trim(), 'base64').toString('utf8');
+            if (decoded.includes('BEGIN PRIVATE KEY')) {
+              key = decoded;
+            }
+          } catch (e) {}
+        }
+      }
+      return key;
+    })(),
     sheetNames: {
       submissions: process.env.SHEET_SUBMISSIONS_NAME || 'Form Responses 1',
     }
