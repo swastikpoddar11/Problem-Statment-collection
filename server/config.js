@@ -26,7 +26,6 @@ export const config = {
     privateKey: (() => {
       let key = process.env.GOOGLE_PRIVATE_KEY || '';
       if (key) {
-        key = key.replace(/\\n/g, '\n');
         if (!key.includes('BEGIN PRIVATE KEY')) {
           try {
             const decoded = Buffer.from(key.trim(), 'base64').toString('utf8');
@@ -35,6 +34,8 @@ export const config = {
             }
           } catch (e) {}
         }
+        // Always ensure literal \n is replaced with actual newline
+        key = key.replace(/\\n/g, '\n');
       }
       return key;
     })(),

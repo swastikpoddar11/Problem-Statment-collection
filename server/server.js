@@ -13,6 +13,9 @@ const publicDir = path.join(__dirname, '..', 'public');
 
 const app = express();
 
+// Trust proxy for Vercel to allow rate limiter to get correct IP
+app.set('trust proxy', 1);
+
 // Security Headers with Helmet
 app.use(
   helmet({
