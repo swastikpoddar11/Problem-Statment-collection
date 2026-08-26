@@ -25,18 +25,20 @@ export const config = {
     serviceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '',
     privateKey: (() => {
       let key = process.env.GOOGLE_PRIVATE_KEY || '';
-      if (key) {
-        if (!key.includes('BEGIN PRIVATE KEY')) {
-          try {
-            const decoded = Buffer.from(key.trim(), 'base64').toString('utf8');
-            if (decoded.includes('BEGIN PRIVATE KEY')) {
-              key = decoded;
-            }
-          } catch (e) {}
-        }
-        // Always ensure literal \n is replaced with actual newline
-        key = key.replace(/\\n/g, '\n');
+      if (!key) return '';
+      // Step 1: Try Base64 decode first
+      if (!key.includes('BEGIN PRIVATE KEY')) {
+        try {
+          const decoded = Buffer.from(key.trim(), 'base64').toString('utf8');
+          if (decoded.includes('BEGIN PRIVATE KEY')) {
+            key = decoded;
+          }
+        } catch (e) {}
       }
+      // Step 2: Replace any literal \n sequences with real newlines
+      key = key.replace(/\\n/g, '\n');
+      // Step 3: Remove surrounding quotes if accidentally included
+      key = key.replace(/^["']|["']$/g, '');
       return key;
     })(),
     sheetNames: {

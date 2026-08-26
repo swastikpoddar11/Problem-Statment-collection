@@ -252,8 +252,12 @@ apiRouter.post('/submissions', submissionLimiter, async (req, res, next) => {
     // 5. Store directly in Supabase submissions table
     await supabaseService.recordSubmissionToSupabase(submissionRecord);
 
-    // 6. Update Google Sheets on the matched team row after column AY (AZ:BE)
-    await sheetsService.recordSubmission(submissionRecord);
+    // 6. Update Google Sheets (non-fatal — Supabase is the source of truth)
+    try {
+      await sheetsService.recordSubmission(submissionRecord);
+    } catch (sheetsErr) {
+      console.error('Google Sheets write failed (non-fatal):', sheetsErr.message);
+    }
 
     return res.status(201).json({
       success: true,
